@@ -32,7 +32,14 @@ app.use(rateLimit({
 }));
 
 // Static files (bill uploads)
-app.use('/uploads', express.static('uploads'));
+app.use(
+  '/uploads',
+  (req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  },
+  express.static('uploads')
+);
 
 // Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

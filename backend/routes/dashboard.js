@@ -19,4 +19,7 @@ router.put('/users/:id', auth, admin, updateUser);
 router.get('/site-status', auth, admin, getSiteStatus);
 router.put('/site-status', auth, admin, setSiteStatus);
 
+// Public read-only endpoint for the frontend site
+router.get('/public-site-status', getSiteStatus);
+
 export default router;

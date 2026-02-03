@@ -65,9 +65,44 @@ export const logout = async (req, res) => {
 
 export const profile = async (req, res) => {
   try {
-    res.json({ user: req.user });
+    const userId = req.user?._id || req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const user = await User.findById(userId)
+      .select('-password')
+      .populate('subscription');
+
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    res.json({ user });
   } catch (err) {
     console.error('Profile error:', err);
     res.status(500).json({ message: 'Server error fetching profile' });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await User.findByIdAndDelete(id);
+    
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Delete user error:', err);
+    res.status(500).json({ message: 'Server error deleting user' });
   }
 };

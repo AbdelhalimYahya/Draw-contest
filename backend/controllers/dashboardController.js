@@ -36,7 +36,7 @@ export const listUsers = async (req, res) => {
       : {};
 
     const [items, total] = await Promise.all([
-      User.find(filter).select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit),
+      User.find(filter).select('-password').populate('subscription').sort({ createdAt: -1 }).skip(skip).limit(limit),
       User.countDocuments(filter),
     ]);
 
