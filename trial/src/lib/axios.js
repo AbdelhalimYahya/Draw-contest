@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "https://draw-contest.vercel.app/",
 });
 
 api.interceptors.request.use((config) => {
@@ -13,6 +13,10 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+// https://draw-contest.vercel.app/
+
+// http://localhost:5000
 
 // Auth
 
