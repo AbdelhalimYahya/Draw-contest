@@ -67,12 +67,29 @@ export const updateUser = async (req, res) => {
 
 export const getSiteStatus = async (req, res) => {
   try {
-    let status = await SiteStatus.findOne();
+    let status = await SiteStatus.findOne().populate('winner', 'name phone');
     if (!status) status = await SiteStatus.create({ isActive: true });
-    res.json({ isActive: status.isActive });
+    res.json({
+      isActive: status.isActive,
+      winner: status.winner
+    });
   } catch (err) {
     console.error('Get site status error:', err);
     res.status(500).json({ message: 'Server error fetching site status' });
+  }
+};
+
+export const getPublicSiteStatus = async (req, res) => {
+  try {
+    let status = await SiteStatus.findOne().populate('winner', 'name'); // Only name, no phone
+    if (!status) status = await SiteStatus.create({ isActive: true });
+    res.json({
+      isActive: status.isActive,
+      winner: status.winner
+    });
+  } catch (err) {
+    console.error('Get public site status error:', err);
+    res.status(500).json({ message: 'Server error fetching public site status' });
   }
 };
 
@@ -83,12 +100,47 @@ export const setSiteStatus = async (req, res) => {
 
     let status = await SiteStatus.findOne();
     if (!status) status = await SiteStatus.create({ isActive });
+
     status.isActive = isActive;
+    // If activating, maybe clear winner? The user didn't specify, but usually yes for a new round.
+    if (isActive) {
+      status.winner = null;
+    }
     await status.save();
 
-    res.json({ isActive: status.isActive });
+    res.json({ isActive: status.isActive, winner: status.winner });
   } catch (err) {
     console.error('Set site status error:', err);
     res.status(500).json({ message: 'Server error updating site status' });
+  }
+};
+
+export const pickWinner = async (req, res) => {
+  try {
+    const count = await Subscription.countDocuments({ status: 'accepted' });
+    if (count === 0) {
+      return res.status(400).json({ message: 'No accepted users to pick from' });
+    }
+
+    const random = Math.floor(Math.random() * count);
+    const sub = await Subscription.findOne({ status: 'accepted' }).skip(random).populate('user');
+
+    if (!sub || !sub.user) {
+      return res.status(500).json({ message: 'Failed to pick winner' });
+    }
+
+    const winner = sub.user;
+
+    let status = await SiteStatus.findOne();
+    if (!status) status = await SiteStatus.create({ isActive: false });
+
+    status.winner = winner._id;
+    await status.save();
+
+    res.json({ winner: { name: winner.name, phone: winner.phone } });
+
+  } catch (err) {
+    console.error('Pick winner error:', err);
+    res.status(500).json({ message: 'Server error picking winner' });
   }
 };

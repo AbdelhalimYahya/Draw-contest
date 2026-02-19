@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: true, unique: true, trim: true },
-    password: { type: String, required: true },
+
+    password: { type: String, required: false },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     isSubscribed: { type: Boolean, default: false },
     subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription', default: null },
@@ -15,7 +16,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();

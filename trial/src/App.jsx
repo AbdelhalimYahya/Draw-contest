@@ -8,6 +8,8 @@ import Subscription from './pages/Subscription';
 import Profile from './pages/Profile';
 import api from './lib/axios';
 
+import WinnerAnnouncement from './components/WinnerAnnouncement';
+
 const CompetitionOver = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans" dir="rtl">
@@ -21,12 +23,16 @@ const CompetitionOver = () => {
 
 function App() {
   const [siteActive, setSiteActive] = useState(null);
+  const [winner, setWinner] = useState(null);
 
   useEffect(() => {
     const fetchSiteStatus = async () => {
       try {
         const res = await api.get('/api/v1/dashboard/public-site-status');
         setSiteActive(Boolean(res.data?.isActive));
+        if (res.data?.winner) {
+          setWinner(res.data.winner);
+        }
       } catch {
         // If the status endpoint fails, don't block the site.
         setSiteActive(true);
@@ -45,6 +51,9 @@ function App() {
   }
 
   if (!siteActive) {
+    if (winner) {
+      return <WinnerAnnouncement winner={winner} />;
+    }
     return <CompetitionOver />;
   }
 

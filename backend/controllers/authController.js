@@ -3,17 +3,17 @@ import { signToken } from '../lib/jwt.js';
 
 export const signup = async (req, res) => {
   try {
-    const { name, phone, password } = req.body;
-    if (!name || !phone || !password) {
-      return res.status(400).json({ message: 'name, phone, password are required' });
+    const { name, phone } = req.body;
+    if (!name || !phone) {
+      return res.status(400).json({ message: 'name, phone are required' });
     }
 
-    const exists = await User.findOne({ phone });
+    let exists = await User.findOne({ phone });
     if (exists) {
-      return res.status(409).json({ message: 'Phone already registered' });
+      return res.status(409).json({ message: 'رقم الهاتف مسجل بالفعل' });
     }
 
-    const user = await User.create({ name, phone, password });
+    const user = await User.create({ name, phone });
     const token = signToken({ id: user._id, role: user.role });
 
     res.status(201).json({
@@ -29,18 +29,23 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { phone, password } = req.body;
-    if (!phone || !password) {
-      return res.status(400).json({ message: 'phone, password are required' });
+    if (!phone) {
+      return res.status(400).json({ message: 'phone is required' });
     }
 
     const user = await User.findOne({ phone });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'رقم الهاتف غير مسجل' });
     }
 
-    const ok = await user.comparePassword(password);
-    if (!ok) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (user.role === 'admin') {
+      if (!password) {
+        return res.status(400).json({ message: 'Password required for admin access' });
+      }
+      const ok = await user.comparePassword(password);
+      if (!ok) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
     }
 
     const token = signToken({ id: user._id, role: user.role });
@@ -88,7 +93,7 @@ export const profile = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!id) {
       return res.status(400).json({ message: 'User ID is required' });
     }
@@ -99,7 +104,7 @@ export const deleteUser = async (req, res) => {
     }
 
     await User.findByIdAndDelete(id);
-    
+
     res.json({ message: 'User deleted successfully' });
   } catch (err) {
     console.error('Delete user error:', err);
