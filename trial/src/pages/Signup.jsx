@@ -22,6 +22,13 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Phone number validation
+        if (formData.phone.length !== 11) {
+            setError('يجب أن يتكون رقم الهاتف من 11 رقم بالضبط');
+            return;
+        }
+
         setLoading(true);
         setError('');
 
@@ -88,7 +95,7 @@ const Signup = () => {
 
                                 {/* Phone Field */}
                                 <div>
-                                    <label className="block text-gray-700 font-bold mb-3 pr-2 text-sm">رقم الهاتف</label>
+                                    <label className="block text-gray-700 font-bold mb-3 pr-2 text-sm">رقم الهاتف (11 رقم)</label>
                                     <div className="relative">
                                         <input
                                             type="tel"
@@ -96,7 +103,8 @@ const Signup = () => {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             required
-                                            placeholder="01XXXXXXXXX"
+                                            maxLength={11}
+                                            placeholder="أدخل 11 رقم (مثال: 010XXXXXXXX)"
                                             className="w-full bg-white border border-gray-100 rounded-2xl py-4 px-12 text-gray-600 focus:outline-none focus:border-[#00A8E8] transition-all text-sm font-medium shadow-sm"
                                         />
                                         <div className="absolute inset-y-0 right-4 flex items-center text-gray-400 pointer-events-none">

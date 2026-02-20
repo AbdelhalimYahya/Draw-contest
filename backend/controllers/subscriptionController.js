@@ -5,6 +5,11 @@ export const createSubscription = async (req, res) => {
   try {
     const phone = req.body.phone;
     if (!phone) return res.status(400).json({ message: 'phone is required' });
+
+    if (phone.length !== 11) {
+      return res.status(400).json({ message: 'يجب أن يتكون رقم الهاتف من 11 رقم بالضبط' });
+    }
+
     if (!req.file) return res.status(400).json({ message: 'bill image is required' });
 
     const existingPending = await Subscription.findOne({ user: req.user._id, status: 'pending' });
@@ -41,9 +46,12 @@ export const updateMySubscription = async (req, res) => {
 
     const sub = await Subscription.findOne({ _id: id, user: req.user._id });
     if (!sub) return res.status(404).json({ message: 'Subscription not found' });
-    if (sub.status !== 'rejected') return res.status(400).json({ message: 'Only rejected subscriptions can be updated' });
-
-    if (phone) sub.phone = phone;
+    if (phone) {
+      if (phone.length !== 11) {
+        return res.status(400).json({ message: 'يجب أن يتكون رقم الهاتف من 11 رقم بالضبط' });
+      }
+      sub.phone = phone;
+    }
     if (req.file) sub.billImage = `/uploads/${req.file.filename}`;
 
     sub.status = 'pending';

@@ -63,6 +63,13 @@ const Subscription = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Phone number validation
+        if (formData.phone.length !== 11) {
+            setError('يجب أن يتكون رقم الهاتف من 11 رقم بالضبط');
+            return;
+        }
+
         if (!formData.phone || !billFile) {
             setError('الرجاء إدخال رقم الهاتف وصورة الإيصال.');
             return;
@@ -154,13 +161,14 @@ const Subscription = () => {
 
                                             {/* Phone Input */}
                                             <div>
-                                                <label className="block text-gray-600 font-bold mb-2 text-sm">رقم الهاتف</label>
+                                                <label className="block text-gray-600 font-bold mb-2 text-sm">رقم الهاتف (11 رقم)</label>
                                                 <div className="relative">
                                                     <input
                                                         type="tel"
                                                         value={formData.phone}
                                                         onChange={handlePhoneChange}
-                                                        placeholder="01XXXXXXXXX"
+                                                        maxLength={11}
+                                                        placeholder="أدخل 11 رقم (مثال: 010XXXXXXXX)"
                                                         required
                                                         className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-4 px-12 text-gray-800 focus:outline-none focus:border-[#00A8E8] focus:bg-white transition-all font-medium text-lg"
                                                     />

@@ -54,7 +54,12 @@ export const updateUser = async (req, res) => {
 
     const update = {};
     if (name) update.name = name;
-    if (phone) update.phone = phone;
+    if (phone) {
+      if (phone.length !== 11) {
+        return res.status(400).json({ message: 'يجب أن يتكون رقم الهاتف من 11 رقم بالضبط' });
+      }
+      update.phone = phone;
+    }
 
     const user = await User.findByIdAndUpdate(id, update, { new: true }).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });

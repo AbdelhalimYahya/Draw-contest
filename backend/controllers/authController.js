@@ -8,6 +8,10 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: 'name, phone are required' });
     }
 
+    if (phone.length !== 11) {
+      return res.status(400).json({ message: 'يجب أن يتكون رقم الهاتف من 11 رقم بالضبط' });
+    }
+
     let exists = await User.findOne({ phone });
     if (exists) {
       return res.status(409).json({ message: 'رقم الهاتف مسجل بالفعل' });
@@ -31,6 +35,10 @@ export const login = async (req, res) => {
     const { phone, password } = req.body;
     if (!phone) {
       return res.status(400).json({ message: 'phone is required' });
+    }
+
+    if (phone.length !== 11) {
+      return res.status(400).json({ message: 'يجب أن يتكون رقم الهاتف من 11 رقم بالضبط' });
     }
 
     const user = await User.findOne({ phone });
