@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -20,9 +21,11 @@ const Navbar = () => {
                     {/* Logo - Left Side */}
                     <div className="shrink-0 flex items-center">
                         <Link to="/" onClick={() => setIsMenuOpen(false)}>
-                            <h1 className="text-3xl font-black text-[--color-text-primary]">
-                                أم النور
-                            </h1>
+                            <img
+                                src={logo}
+                                alt="Om Elnour Logo"
+                                className="h-39 sm:h-50 w-auto object-contain"
+                            />
                         </Link>
                     </div>
 

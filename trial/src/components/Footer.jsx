@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../assets/logo.png';
 
 const Footer = () => {
     return (
@@ -8,9 +9,11 @@ const Footer = () => {
 
                     {/* Brand Column (Right visually in RTL) */}
                     <div className="flex flex-col items-start">
-                        <h2 className="text-2xl font-black text-gray-900 mb-6">
-                            أم النور
-                        </h2>
+                        <img
+                            src={logo}
+                            alt="Om Elnour Logo"
+                            className="h-35 sm:h-45 w-auto object-contain mb-6"
+                        />
                         <p className="text-gray-500 leading-relaxed text-base mb-8 max-w-sm">
                             نسعى دائماً لإدخال السعادة على قلوب عملائنا من خلال تقديم أفضل الجوائز وأجود الخدمات المنزلية.
                         </p>

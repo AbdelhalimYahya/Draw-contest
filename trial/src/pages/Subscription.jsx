@@ -142,7 +142,8 @@ const Subscription = () => {
                             {/* Header */}
                             <div className="text-center mb-10">
                                 <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">اشترك في السحب الآن</h1>
-                                <p className="text-gray-500 text-lg">أدخل رقم هاتفك وصورة التحويل البنكي لتدخل السحب على الجوائز الكبرى</p>
+                                <p className="text-gray-500 text-lg">ادخل الرقم الذي حولت منه علي محفظة فودافون كاش</p>
+                                <p className="text-gray-500 text-lg">رقم التحويل هو 01030593289</p>
                             </div>
 
                             {error && (
