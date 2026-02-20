@@ -17,9 +17,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (phone, password) => {
+    const login = async (phone) => {
         try {
-            const response = await api.post('/api/v1/auth/login', { phone, password });
+            const response = await api.post('/api/v1/auth/login', { phone });
             const { user: userData, token } = response.data;
 
             if (userData.role !== 'admin') {

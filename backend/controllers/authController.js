@@ -46,16 +46,6 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'رقم الهاتف غير مسجل' });
     }
 
-    if (user.role === 'admin') {
-      if (!password) {
-        return res.status(400).json({ message: 'Password required for admin access' });
-      }
-      const ok = await user.comparePassword(password);
-      if (!ok) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-    }
-
     const token = signToken({ id: user._id, role: user.role });
     res.json({
       token,
